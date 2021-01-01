@@ -54,6 +54,14 @@ module ElementParser =
                           .>>.(manyCharsTill anyChar (skipChar '"' >>. ws0 >>. skipChar ')'))
         let toTitle s = if String.IsNullOrEmpty s then None else Some s 
         pipe2 alt (attempt srcAndTitle <|> src) (fun a (tar,tit) -> Image { AltText = a;  Target = tar; Title = toTitle tit})
+            
+    let link =
+        let alt = skipString "[" >>. manyCharsTill anyChar (skipChar ']')
+        let src = skipChar '(' >>. manyCharsTill anyChar (skipChar ')') |>> fun s -> (s,String.Empty)
+        let srcAndTitle = (skipChar '(' >>. manyCharsTill anyChar (skipString " \""))
+                          .>>.(manyCharsTill anyChar (skipChar '"' >>. ws0 >>. skipChar ')'))
+        let toTitle s = if String.IsNullOrEmpty s then None else Some s 
+        pipe2 alt (attempt srcAndTitle <|> src) (fun a (tar,tit) -> Link { Text = a;  Target = tar; Title = toTitle tit})
         
     let text = restOfLine true |>> Text
     let elements = choice
@@ -63,6 +71,7 @@ module ElementParser =
                          blockCode
                          inlineCode
                          image
+                         link
                          // text must be last
                          text
                        ]

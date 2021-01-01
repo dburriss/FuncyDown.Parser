@@ -53,6 +53,16 @@ let ``Image with no title`` () =
 let ``Image with title`` () =
     let expected = emptyDocument |> addImage { AltText = "some alt"; Target = "/some/target"; Title = Some "A title" }
     testRoundTrip expected
+          
+[<Fact>]
+let ``Link with no title`` () =
+    let expected = emptyDocument |> addLink { Text = "some alt"; Target = "/some/target"; Title = None }
+    testRoundTrip expected
+           
+[<Fact>]
+let ``Link with title`` () =
+    let expected = emptyDocument |> addLink { Text = "some alt"; Target = "/some/target"; Title = Some "A title" }
+    testRoundTrip expected
     
 [<Fact>]
 let ``Text with words`` () =
