@@ -52,6 +52,21 @@ let ``InlineCode parser`` () =
     Assert.Equal(expected, actual)
 
 [<Fact>]
+let ``Ordered item single`` () =
+    let actual = test ElementParser.list "1. one\n"
+    let expected = OrderedList [{ Text = "one"; Intend = 0 }]
+    Assert.Equal(expected, actual)
+    
+[<Fact>]
+let ``Ordered item indented`` () =
+    let actual = test ElementParser.list "1. one\n\t1. two\n"
+    let expected = OrderedList [
+        { Text = "one"; Intend = 0 }
+        { Text = "two"; Intend = 1 }
+    ]
+    Assert.Equal(expected, actual)
+    
+[<Fact>]
 let ``Text parser`` () =
     let actual = test ElementParser.text " x"
     let expected = (Element.Text " x")

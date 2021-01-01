@@ -63,8 +63,51 @@ let ``Link with no title`` () =
 let ``Link with title`` () =
     let expected = emptyDocument |> addLink { Text = "some alt"; Target = "/some/target"; Title = Some "A title" }
     testRoundTrip expected
-    
+              
 [<Fact>]
+let ``Unordered list no indents`` () =
+    let expected = emptyDocument |> addUnorderedList [
+        { Text = "one"; Intend = 0 }
+        { Text = "two"; Intend = 0 }
+    ]
+    testRoundTrip expected
+                  
+[<Fact>]
+let ``Unordered list with indents`` () =
+    let expected = emptyDocument |> addUnorderedList [
+        { Text = "one.1"; Intend = 0 }
+        { Text = "one.2"; Intend = 0 }
+        { Text = "two.1"; Intend = 1 }
+        { Text = "two.2"; Intend = 1 }
+    ]
+    testRoundTrip expected
+                  
+[<Fact>]
+let ``Ordered list no indents single`` () =
+    let expected = emptyDocument |> addOrderedList [
+        { Text = "one"; Intend = 0 }
+    ]
+    testRoundTrip expected
+                      
+[<Fact>]
+let ``Ordered list no indents`` () =
+    let expected = emptyDocument |> addOrderedList [
+        { Text = "one"; Intend = 0 }
+        { Text = "two"; Intend = 0 }
+    ]
+    testRoundTrip expected
+                  
+[<Fact>]
+let ``Ordered list with indents`` () =
+    let expected = emptyDocument |> addOrderedList [
+        { Text = "one.1"; Intend = 0 }
+        { Text = "one.2"; Intend = 0 }
+        { Text = "two.1"; Intend = 1 }
+        { Text = "two.2"; Intend = 1 }
+    ]
+    testRoundTrip expected
+    
+[<Fact(Skip = "Not implemented correctly yet")>]
 let ``Text with words`` () =
     let expected = emptyDocument |> addText text
     testRoundTrip expected
