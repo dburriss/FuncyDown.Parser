@@ -15,10 +15,10 @@ module ParserHelpers =
     let ws0 : Parser<_> = spaces 
     let empty : Parser<_> = ws0.>>.eof
     
-    // Applies popen, then pchar repeatedly until pclose succeeds,
-    // returns the string in the middle
     let manyCharsBetween popen pclose pchar = popen >>? manyCharsTill pchar pclose
-    let indents :Parser <_> = many (satisfy (fun c -> c = '\t'))
+    let anyStringBetween popen pclose = manyCharsBetween popen pclose anyChar
+    let indents : Parser <_> = many (satisfy (fun c -> c = '\t'))
+    let dblNewline : Parser<_> = (newline.>>newline) |>> ignore
 
 module ElementParser =
     open ParserHelpers
@@ -66,13 +66,11 @@ module ElementParser =
         pipe2 alt (attempt srcAndTitle <|> src) (fun a (tar,tit) -> Link { Text = a;  Target = tar; Title = toTitle tit})
     
     let private unorderedListRest : Parser<_> =
-        let indents = many (satisfy (fun c -> c = '\t'))
         let items = indents.>>.?(skipString "* ">>?(manyCharsTill anyChar newline))
         let list = many items
         list
             
     let private orderedListRest : Parser<_> =
-        let indents = many (satisfy (fun c -> c = '\t'))
         let ordered = (skipSatisfy isDigit .>>. skipString ". ")
         let items = indents.>>.(ordered>>.(manyCharsTill anyChar newline))
         let list = many items
@@ -94,7 +92,40 @@ module ElementParser =
                       |>> (List.map (fun (ts,s) -> { Text = s; Intend = ts |> List.length }) >> UnorderedList)
         (ordered <|> unordered)
         
-    let text : Parser<_> = (restOfLine true |>> Text) <|> (empty >>% Text "")
+    let text : Parser<_> =
+        let breakAt = [| '\n';'*'|]
+        ((manyCharsTill anyChar eof) |>> Text)
+        <|> (manyChars (noneOf breakAt) |>> Text)
+        <|> (restOfLine true |>> Text)
+        <|> (empty >>% Text "")
+        
+    let newline : Parser<_> = newline |>> fun _ -> Text (Environment.NewLine)
+    
+    let strikethrough : Parser<_> =
+        let doubleTilde = (pstring "~~")
+        anyStringBetween doubleTilde doubleTilde |>> StrikeThrough
+        
+    let strongEmphasis : Parser<_> =
+        let doubleTilde = (pstring "**")
+        anyStringBetween doubleTilde doubleTilde |>> StrongEmphasis
+        
+    let emphasis : Parser<_> =
+        let doubleTilde = (pstring "*")
+        anyStringBetween doubleTilde doubleTilde |>> Emphasis
+        
+    let paragraph : Parser<_> =
+        let p = manyCharsTill anyChar dblNewline
+        attempt (p |>> Paragraph)
+        
+    let private header hashes size : Parser<_> =
+        (anyStringBetween (pstring $"{hashes} ") (dblNewline))
+        |>> fun s -> Header { Size = size; Text = s }
+    let h1 = header "#" H1
+    let h2 = header "##" H2
+    let h3 = header "###" H3
+    let h4 = header "####" H4
+    let h5 = header "#####" H5
+    let h6 = header "######" H6
     let elements = choice
                        [
                          horizontalRule
@@ -104,8 +135,14 @@ module ElementParser =
                          image
                          link
                          list
+                         strikethrough
+                         strongEmphasis
+                         emphasis
+                         newline
+                         h1;h2;h3;h4;h5;h6
+                         paragraph
                          // text must be last
-//                         text
+                         text
                        ] <?> "Markdown elements parser"
     let markdownParser = (manyTill elements eof) <?> "Markdown parser"
 
@@ -114,7 +151,7 @@ module Document =
     open FuncyDown.Document
     open FParsec
     let parse (markdown : string) : Document =
-        if String.IsNullOrWhiteSpace markdown then
+        if String.IsNullOrEmpty markdown then
             { Elements = List.empty }
         else
             let parser = ElementParser.markdownParser

@@ -18,6 +18,11 @@ let testRoundTrip doc =
 let ``Empty md is empty document`` () =
     let expected = emptyDocument
     testRoundTrip expected
+
+[<Fact>]
+let ``Newline`` () =
+    let expected = emptyDocument |> addNewline
+    testRoundTrip expected
     
 [<Fact>]
 let ``Horizontal rule`` () =
@@ -107,8 +112,62 @@ let ``Ordered list with indents`` () =
     ]
     testRoundTrip expected
     
-[<Fact(Skip = "Not implemented correctly yet")>]
+[<Fact>]
+let ``Strikethrough`` () =
+    let expected = emptyDocument |> addStrikeThrough text
+    testRoundTrip expected
+    
+[<Fact>]
+let ``Strong emphasis`` () =
+    let expected = emptyDocument |> addStrongEmphasis text
+    testRoundTrip expected
+    
+[<Fact>]
+let ``Emphasis`` () =
+    let expected = emptyDocument |> addEmphasis text
+    testRoundTrip expected
+    
+[<Fact>]
 let ``Text with words`` () =
     let expected = emptyDocument |> addText text
     testRoundTrip expected
-    
+       
+[<Fact>]
+let ``Paragraph`` () =
+    let expected = emptyDocument |> addParagraph text
+    testRoundTrip expected
+     
+[<Fact(Skip = "Not implemented yet")>]
+let ``Table`` () =
+    let expected = emptyDocument |> addTable [] []
+    testRoundTrip expected
+         
+[<Fact>]
+let ``Heading 1`` () =
+    let expected = emptyDocument |> addH1 text
+    testRoundTrip expected
+          
+[<Fact>]
+let ``Heading 2`` () =
+    let expected = emptyDocument |> addH2 text
+    testRoundTrip expected
+          
+[<Fact>]
+let ``Heading 3`` () =
+    let expected = emptyDocument |> addH3 text
+    testRoundTrip expected
+          
+[<Fact>]
+let ``Heading 4`` () =
+    let expected = emptyDocument |> addH4 text
+    testRoundTrip expected
+          
+[<Fact>]
+let ``Heading 5`` () =
+    let expected = emptyDocument |> addH5 text
+    testRoundTrip expected
+          
+[<Fact>]
+let ``Heading 6`` () =
+    let expected = emptyDocument |> addH6 text
+    testRoundTrip expected

@@ -67,6 +67,12 @@ let ``Ordered item indented`` () =
     Assert.Equal(expected, actual)
     
 [<Fact>]
+let ``Newline parser`` () =
+    let actual = test ElementParser.newline "\n"
+    let expected = (Element.Text Environment.NewLine)
+    Assert.Equal(expected, actual)
+    
+[<Fact>]
 let ``Text parser`` () =
     let actual = test ElementParser.text " x"
     let expected = (Element.Text " x")
