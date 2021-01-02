@@ -9,7 +9,7 @@
         <Description>Parses simple markdown files generated from FuncyDown back to FuncyDown types.</Description>
         <Copyright>Devon Burriss 2021</Copyright>
         <PackageProjectUrl>https://github.com/dburriss/FuncyDown.Parser</PackageProjectUrl>
-        <License>https://github.com/dburriss/FuncyDown.Parser/blob/master/LICENSE</License>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageTags>Markdown Parser Transformer</PackageTags>
         <PackageReleaseNotes>
             # 0.0.1
