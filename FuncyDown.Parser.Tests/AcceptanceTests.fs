@@ -1,7 +1,7 @@
 module AcceptanceTests
 
 open FuncyDown
-open FuncyDown.Document
+//open FuncyDown.Document
 open FuncyDown.Element
 open Xunit
 
@@ -34,7 +34,7 @@ let ``Parse full markdown text returns expected elements`` () =
     
 [<Fact>]
 let ``Transform md file to cancel status`` () =
-    let doc = parse mdText
+    let doc = Document.parse mdText
     let cancel : Transform =
         fun ctx el ->
             match el with
