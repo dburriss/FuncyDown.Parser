@@ -2,6 +2,20 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+        <Version>0.0.1</Version>
+        <PackageId>FuncyDown.Parser</PackageId>
+        <Title>FuncyDown Parser</Title>
+        <Authors>Devon Burriss</Authors>
+        <Description>Parses simple markdown files generated from FuncyDown back to FuncyDown types.</Description>
+        <Copyright>Devon Burriss 2021</Copyright>
+        <PackageProjectUrl>https://github.com/dburriss/FuncyDown.Parser</PackageProjectUrl>
+        <License>https://github.com/dburriss/FuncyDown.Parser/blob/master/LICENSE</License>
+        <PackageTags>Markdown Parser Transformer</PackageTags>
+        <PackageReleaseNotes>
+            # 0.0.1
+            - Initial release of parser and transformer
+            - Tables not supported
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
