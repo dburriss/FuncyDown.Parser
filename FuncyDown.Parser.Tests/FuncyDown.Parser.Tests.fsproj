@@ -10,6 +10,8 @@
     <ItemGroup>
         <Compile Include="ElementParserTests.fs" />
         <Compile Include="DocumentTests.fs" />
+        <Compile Include="TransformationTests.fs" />
+        <Compile Include="AcceptanceTests.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 

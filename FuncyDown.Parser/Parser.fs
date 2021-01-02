@@ -17,7 +17,7 @@ module ParserHelpers =
     
     let manyCharsBetween popen pclose pchar = popen >>? manyCharsTill pchar pclose
     let anyStringBetween popen pclose = manyCharsBetween popen pclose anyChar
-    let indents : Parser <_> = many (satisfy (fun c -> c = '\t'))
+    let indents = many (satisfy (fun c -> c = '\t'))
     let dblNewline : Parser<_> = (newline.>>newline) |>> ignore
 
 module ElementParser =
